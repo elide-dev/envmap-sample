@@ -43,7 +43,7 @@ main () {
 
     cd vm
     mx clean
-    mx --env ni-ce build -j 1
+    mx -j 1 --env ni-ce build
 
     cd "$BASELOC"
 }
