@@ -50,6 +50,7 @@ main () {
         -march=compatibility \
         --static \
         EnvMap \
+        -H:-CheckToolchain \
         -H:CCompilerPath="$COSMOCC_BIN/$ARCH-unknown-cosmo-cc" \
         -H:CLibraryPath="$LABS_LIBDIR" \
         -H:PatchableFunctionEntry="$PFE_OPT"\
