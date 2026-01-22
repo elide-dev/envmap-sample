@@ -19,6 +19,7 @@ main () {
     #
     cd "$BASELOC/testing/cosmopolitan"
     ./tool/cosmocc/package.sh cosmocc
+    ./cosmocc/bin/x86_64-unknown-cosmo-cc -v
     cd "$BASELOC"
 }
 
