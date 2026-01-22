@@ -10,7 +10,7 @@ sudo apt-get install -y ca-certificates libssl-dev\
 mkdir -p testing
 cd testing
 # cosmo
-git clone https://github.com/jart/cosmopolitan --depth=1
+git clone https://github.com/ahgamut/cosmopolitan --depth=1 --branch=header-stubs
 cd cosmopolitan
 sudo bash ape/apeinstall.sh
 sudo rm -rf ./o
