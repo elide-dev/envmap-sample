@@ -1,0 +1,8 @@
+
+CURDIR="$(pwd)"
+DEFAULT_ARCH="$(uname --machine)"
+ARCH="${ARCH:-DEFAULT_ARCH}"
+
+export BASELOC="$CURDIR"
+export BOOT_JDK_PATH="$BASELOC/testing/sdkman/candidates/java/25.0.1-open"
+export MX_JDK_LABS="$BASELOC/testing/boot-labs-jdk"

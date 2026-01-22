@@ -1,0 +1,64 @@
+name: "build patched libs"
+
+jobs:
+    build-cosmocc:
+        name: "build cosmocc and static lib deps"
+        runs-on: ubuntu-24.04
+        steps:
+            - name: "clone repo"
+              uses: actions/checkout@v4
+            - name: "setup qemu and requirements"
+              run: bash scripts/setup-requirements.sh
+            - name: "get boot/mx labs jdk"
+              run: ARCH=x86_64 make get-boot-jdk get-mx-labs-jdk
+            - name: "build cosmocc"
+              run: make build-deps-labs collect-cosmocc
+            - name: "build labs JDK static libs (aarch64)"
+              run: |
+                rm -f results/build-graal-helpers.complete
+                rm -f results/collect-graal-helpers.complete
+                rm -f results/build-labs-jdk.complete
+                rm -f results/collect-labs-jdk.complete
+                ARCH=aarch64 make collect-labs-jdk collect-graal-helpers
+            - name: "build labs JDK static libs (x86_64)"
+              run: |
+                rm -f results/build-graal-helpers.complete
+                rm -f results/collect-graal-helpers.complete
+                rm -f results/build-labs-jdk.complete
+                rm -f results/collect-labs-jdk.complete
+                ARCH=x86_64 make collect-labs-jdk collect-graal-helpers
+            - name: "upload cosmocc"
+              uses: actions/upload-artifact@v6
+              with:
+                name: cosmocc-${{ github.sha }}
+                overwrite: true
+                path: ./build/cosmocc.zip
+                compression-level: 0
+            - name: "upload labs JDK x86_64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: labs-x86_64-libs-${{ github.sha }}
+                overwrite: true
+                path: ./build/labs-x86_64-cosmo-libs.zip
+                compression-level: 0
+            - name: "upload graal helper x86_64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: graal-x86_64-libs-${{ github.sha }}
+                overwrite: true
+                path: ./build/graal-x86_64-helpers.zip
+                compression-level: 0
+            - name: "upload labs JDK aarch64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: labs-aarch64-libs-${{ github.sha }}
+                overwrite: true
+                path: ./build/labs-aarch64-cosmo-libs.zip
+                compression-level: 0
+            - name: "upload graal helper aarch64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: graal-aarch64-libs-${{ github.sha }}
+                overwrite: true
+                path: ./build/graal-aarch64-helpers.zip
+                compression-level: 0

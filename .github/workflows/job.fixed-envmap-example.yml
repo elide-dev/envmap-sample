@@ -1,0 +1,89 @@
+name: "build envmap example (w/ patched libs)"
+
+# to access artifacts from the patched libs action
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+    build-via-native-image:
+        name: "build envmap via native-image"
+        strategy:
+            fail-fast: true
+            matrix:
+                include:
+                    - platform: ubuntu-24.04
+                      arch: 'x86_64'
+                    - platform: ubuntu-24.04-arm
+                      arch: 'aarch64'
+        runs-on: ${{ matrix.platform }}
+        steps:
+            - name: "clone repo"
+              uses: actions/checkout@v4
+            - name: "download cosmocc"
+              uses: actions/download-artifact@v7
+              with:
+                run-id: TBD
+                name: cosmocc
+                github-token: ${{ github.token }}
+            - name: "download labs JDK libs"
+              uses: actions/download-artifact@v7
+              with:
+                run-id: TBD
+                name: labs-${{ matrix.arch }}-libs
+                github-token: ${{ github.token }}
+            - name: "download graal helper libs"
+              uses: actions/download-artifact@v7
+              with:
+                run-id: TBD
+                name: graal-${{ matrix.arch }}-libs
+                github-token: ${{ github.token }}
+            - name: "build native image from source"
+              run: make ARCH=${{ matrix.arch }} build-native-image
+            - name: "setup downloaded artifacts"
+              run: ARCH=${{ matrix.arch }} bash scripts/download-partials-setup.sh
+            - name: "build envmap example"
+              run: make ARCH=${{ matrix.arch }} build-envmap-example
+            - name: "upload envmap example"
+              uses: actions/upload-artifact@v6
+              with:
+                name: envmap-${{ matrix.arch }}
+                overwrite: true
+                path: ./build/envmap.${{ matrix.arch }}
+                compression-level: 0
+    build-ape:
+        name: "build envmap APE"
+        needs: [build-via-native-image]
+        runs-on: ubuntu-24.04
+        steps:
+            - name: "clone repo"
+              uses: actions/checkout@v4
+            - name: "get cosmocc artifact"
+              uses: actions/download-artifact@v7
+              with:
+                run-id: TBD
+                name: cosmocc
+                github-token: ${{ github.token }}
+            - name: "get x86_64 envmap artifact"
+              uses: actions/download-artifact@v7
+              with:
+                name: envmap-x86_64
+            - name: "get aarch64 envmap artifact"
+              uses: actions/download-artifact@v7
+              with:
+                name: envmap-aarch64
+            - name: "setup cosmocc"
+              run: |
+                mkdir -p testing/cosmopolitan
+                cd testing/cosmopolitan
+                unzip -qo ../../cosmocc.zip
+                cd ../../
+            - name: "build APE"
+              run: bash scripts/apelinkpls.sh envmap
+            - name: "upload envmap APE"
+              uses: actions/upload-artifact@v6
+              with:
+                name: envmap-APE
+                overwrite: true
+                path: ./envmap.com
+                compression-level: 0

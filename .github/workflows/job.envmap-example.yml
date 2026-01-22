@@ -1,0 +1,142 @@
+name: "build envmap example (end-to-end)"
+
+jobs:
+    build-cosmocc:
+        name: "build cosmocc and static lib deps"
+        runs-on: ubuntu-24.04
+        steps:
+            - name: "clone repo"
+              uses: actions/checkout@v4
+            - name: "setup qemu and requirements"
+              run: bash scripts/setup-requirements.sh
+            - name: "get boot/mx labs jdk"
+              run: ARCH=x86_64 make get-boot-jdk get-mx-labs-jdk
+            - name: "build cosmocc"
+              run: make build-deps-labs collect-cosmocc
+            - name: "build labs JDK static libs (aarch64)"
+              run: |
+                rm -f results/build-graal-helpers.complete
+                rm -f results/collect-graal-helpers.complete
+                rm -f results/build-labs-jdk.complete
+                rm -f results/collect-labs-jdk.complete
+                ARCH=aarch64 make collect-labs-jdk collect-graal-helpers
+            - name: "build labs JDK static libs (x86_64)"
+              run: |
+                rm -f results/build-graal-helpers.complete
+                rm -f results/collect-graal-helpers.complete
+                rm -f results/build-labs-jdk.complete
+                rm -f results/collect-labs-jdk.complete
+                ARCH=x86_64 make collect-labs-jdk collect-graal-helpers
+            - name: "upload cosmocc"
+              uses: actions/upload-artifact@v6
+              with:
+                name: cosmocc
+                overwrite: true
+                path: ./build/cosmocc.zip
+                compression-level: 0
+            - name: "upload labs JDK x86_64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: labs-x86_64-libs
+                overwrite: true
+                path: ./build/labs-x86_64-cosmo-libs.zip
+                compression-level: 0
+            - name: "upload graal helper x86_64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: graal-x86_64-libs
+                overwrite: true
+                path: ./build/graal-x86_64-helpers.zip
+                compression-level: 0
+            - name: "upload labs JDK aarch64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: labs-aarch64-libs
+                overwrite: true
+                path: ./build/labs-aarch64-cosmo-libs.zip
+                compression-level: 0
+            - name: "upload graal helper aarch64 libs"
+              uses: actions/upload-artifact@v6
+              with:
+                name: graal-aarch64-libs
+                overwrite: true
+                path: ./build/graal-aarch64-helpers.zip
+                compression-level: 0
+    build-via-native-image:
+        name: "build envmap via native-image"
+        needs: [build-cosmocc]
+        strategy:
+            fail-fast: true
+            matrix:
+                include:
+                    - platform: ubuntu-24.04
+                      arch: 'x86_64'
+                    - platform: ubuntu-24.04-arm
+                      arch: 'aarch64'
+        runs-on: ${{ matrix.platform }}
+        steps:
+            - name: "clone repo"
+              uses: actions/checkout@v4
+            - name: "setup qemu and requirements"
+              run: bash scripts/setup-requirements.sh
+            - name: "download cosmocc"
+              uses: actions/download-artifact@v7
+              with:
+                name: cosmocc
+            - name: "download labs JDK libs"
+              uses: actions/download-artifact@v7
+              with:
+                name: labs-${{ matrix.arch }}-libs
+            - name: "download graal helper libs"
+              uses: actions/download-artifact@v7
+              with:
+                name: graal-${{ matrix.arch }}-libs
+            - name: "build native image from source"
+              run: make ARCH=${{ matrix.arch }} build-native-image
+            - name: "setup downloaded artifacts"
+              run: ARCH=${{ matrix.arch }} bash scripts/download-partials-setup.sh
+            - name: "build envmap example"
+              run: make ARCH=${{ matrix.arch }} build-envmap-example
+            - name: "upload envmap example"
+              uses: actions/upload-artifact@v6
+              with:
+                name: envmap-${{ matrix.arch }}
+                overwrite: true
+                path: ./build/envmap.${{ matrix.arch }}
+                compression-level: 0
+    build-ape:
+        name: "build envmap APE"
+        needs: [build-via-native-image]
+        runs-on: ubuntu-24.04
+        steps:
+            - name: "clone repo"
+              uses: actions/checkout@v4
+            - name: "setup qemu and requirements"
+              run: bash scripts/setup-requirements.sh
+            - name: "get cosmocc artifact"
+              uses: actions/download-artifact@v7
+              with:
+                name: cosmocc
+            - name: "get x86_64 envmap artifact"
+              uses: actions/download-artifact@v7
+              with:
+                name: envmap-x86_64
+            - name: "get aarch64 envmap artifact"
+              uses: actions/download-artifact@v7
+              with:
+                name: envmap-aarch64
+            - name: "setup cosmocc"
+              run: |
+                mkdir -p testing/cosmopolitan
+                cd testing/cosmopolitan
+                unzip -qo ../../cosmocc.zip
+                cd ../../
+            - name: "build APE"
+              run: bash scripts/apelinkpls.sh envmap
+            - name: "upload envmap APE"
+              uses: actions/upload-artifact@v6
+              with:
+                name: envmap-APE
+                overwrite: true
+                path: ./envmap.com
+                compression-level: 0
