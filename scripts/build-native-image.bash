@@ -44,6 +44,7 @@ main () {
     cd vm
     mx clean
     mx -c 1 --env ni-ce build
+    cd ../
     tree
 
     cd "$BASELOC"
