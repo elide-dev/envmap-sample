@@ -28,12 +28,13 @@ main () {
     check_vars
     #
     COSMOCC_BIN="$BASELOC/testing/cosmopolitan/cosmocc/bin"
-    export PATH="$NATIMG_PATH/bin:$COSMOCC_BIN:$BASELOC/testing/mx:$PATH"
+    export PATH="$COSMOCC_BIN:$BASELOC/testing/mx:$PATH"
 
     cd "$BASELOC/testing/graal/vm"
     ls "$(mx -c 1 --dy /substratevm --native-images=native-image graalvm-home)"
     NATIMG_PATH="$(mx -c 1 --dy /substratevm --native-images=native-image graalvm-home)"
     echo "natimg is at? $NATIMG_PATH"
+    export PATH="$NATIMG_PATH/bin:$PATH"
     LABS_LIBDIR="$BASELOC/build/labs-$ARCH-cosmo-libs"
 
     if [ x"$ARCH" = x"x86_64" ]; then
