@@ -29,6 +29,7 @@ main () {
     #
     COSMOCC_BIN="$BASELOC/testing/cosmopolitan/cosmocc/bin"
     export PATH="$COSMOCC_BIN:$BASELOC/testing/mx:$PATH"
+    export JAVA_HOME="$MX_JDK_LABS"
 
     cd "$BASELOC/testing/graal/vm"
     ls "$(mx -c 1 --dy /substratevm --native-images=native-image graalvm-home)"
