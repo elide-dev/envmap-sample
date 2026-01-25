@@ -20,7 +20,7 @@ main () {
     cd "$BASELOC/testing"
     rm -rf labs-openjdk
 
-    git clone --depth=1 --branch 'cosmo-25.0.2' https://github.com/elide-dev/labs-openjdk
+    git clone --depth=1 --branch 'cosmo' https://github.com/elide-dev/labs-openjdk
     cd labs-openjdk
 
     cd "$BASELOC"

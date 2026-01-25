@@ -56,7 +56,6 @@ main () {
         -jar google-java-format.jar \
         -Os \
         --libc=cosmo \
-        -H:-CheckToolchain \
         -march=compatibility \
         -H:+UnlockExperimentalVMOptions\
         -H:IncludeResourceBundles=com.sun.tools.javac.resources.compiler\
