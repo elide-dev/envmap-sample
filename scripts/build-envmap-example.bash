@@ -31,7 +31,7 @@ main () {
     export PATH="$NATIMG_PATH/bin:$COSMOCC_BIN:$BASELOC/testing/mx:$PATH"
 
     cd "$BASELOC/testing/graal/vm"
-    NATIMG_PATH="$(mx -c 1 --dy /substratevm graalvm-home)"
+    NATIMG_PATH="$(mx -c 1 --dy /substratevm --native-images=native-image graalvm-home)"
     echo "natimg is at? $NATIMG_PATH"
     LABS_LIBDIR="$BASELOC/build/labs-$ARCH-cosmo-libs"
 
