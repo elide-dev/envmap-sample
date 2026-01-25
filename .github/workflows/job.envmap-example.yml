@@ -143,3 +143,42 @@ jobs:
                 overwrite: true
                 path: ./envmap.com
                 compression-level: 0
+    test-ape:
+        name: "Test APE"
+        needs: [build-ape]
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - platform: ubuntu-24.04
+                      type: 'nix'
+                    - platform: ubuntu-24.04-arm
+                      type: 'nix'
+                    - platform: macos-15-intel
+                      type: 'nix'
+                    - platform: macos-15
+                      type: 'nix'
+                    - platform: windows-latest
+                      type: 'win32'
+        runs-on: ${{ matrix.platform }}
+        steps:
+            - name: "Setup: Download Artifact"
+              uses: actions/download-artifact@v7
+              with:
+                name: envmap-APE
+            - name: "Run: envmap.com (*nix)"
+              if: matrix.type == 'nix'
+              shell: bash
+              run: chmod +x ./envmap.com && ./envmap.com
+            - name: "Run: envmap.com (win32)"
+              if: matrix.type == 'win32'
+              shell: pwsh
+              run: '& .\envmap.com'
+            - name: "Run: envmap.com --strace (*nix)"
+              if: matrix.type == 'nix' && (success() || failure())
+              shell: bash
+              run: ./envmap.com --strace --ftrace
+            - name: "Run: envmap.com --strace (win32)"
+              if: matrix.type == 'win32' && (success() || failure())
+              shell: pwsh
+              run: '& .\envmap.com --strace --ftrace'
