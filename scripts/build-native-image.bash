@@ -45,6 +45,7 @@ main () {
     mx clean
     mx -c 1 --dy /substratevm --native-images=native-image graalvm-show
     mx -c 1 --dy /substratevm --native-images=native-image build
+    mx -c 1 --dy /substratevm graalvm-home
 
     cd "$BASELOC"
 }
