@@ -40,6 +40,8 @@ main () {
         PFE_OPT="7,6"
     fi
 
+    ls "$NATIMG_PATH/bin"
+
     NATIMG_COSMO="$NATIMG_PATH/lib/svm/clibraries/linux-$SUBARCH/cosmo"
     mkdir -p "$NATIMG_COSMO"
     cp ./build/graal-$ARCH-helpers/*.a "$NATIMG_COSMO"
