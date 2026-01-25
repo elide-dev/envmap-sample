@@ -90,3 +90,42 @@ jobs:
                 overwrite: true
                 path: ./google-java-format.com
                 compression-level: 0
+    test-ape:
+        name: "Test APE"
+        needs: [build-ape]
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - platform: ubuntu-24.04
+                      type: 'nix'
+                    - platform: ubuntu-24.04-arm
+                      type: 'nix'
+                    - platform: macos-15-intel
+                      type: 'nix'
+                    - platform: macos-15
+                      type: 'nix'
+                    - platform: windows-latest
+                      type: 'win32'
+        runs-on: ${{ matrix.platform }}
+        steps:
+            - name: "Setup: Download Artifact"
+              uses: actions/download-artifact@v7
+              with:
+                name: google-java-format-APE
+            - name: "download sample java file"
+              if: matrix.type == 'nix'
+              shell: bash
+              run: curl -o sample.java 'https://raw.githubusercontent.com/elide-dev/graal/refs/heads/master/substratevm/src/com.oracle.svm.core.posix/src/com/oracle/svm/core/posix/PosixSignalHandlerSupport.java'
+            - name: "download sample java file (windows)"
+              if: matrix.type == 'win32'
+              shell: pwsh
+              run: curl -o sample.java 'https://raw.githubusercontent.com/elide-dev/graal/refs/heads/master/substratevm/src/com.oracle.svm.core.posix/src/com/oracle/svm/core/posix/PosixSignalHandlerSupport.java'
+            - name: "Run: (*nix)"
+              if: matrix.type == 'nix'
+              shell: bash
+              run: chmod +x ./google-java-format.com && ./google-java-format.com sample.java
+            - name: "Run: (win32)"
+              if: matrix.type == 'win32'
+              shell: pwsh
+              run: '& .\google-java-format.com sample.java'
