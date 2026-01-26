@@ -21,7 +21,7 @@ main () {
     rm -rf graal
 
     cd "$BASELOC/testing"
-    git clone --depth 1 --branch cosmo https://github.com/elide-dev/graal
+    git clone --depth 1 --branch cosmo-darwin https://github.com/elide-dev/graal
     cd graal
 
     cd "$BASELOC"
