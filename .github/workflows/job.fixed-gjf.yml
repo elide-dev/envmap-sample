@@ -26,20 +26,20 @@ jobs:
             - name: "download cosmocc"
               uses: actions/download-artifact@v7
               with:
-                run-id: 21328957334
-                name: cosmocc-6d33251cbbb6f895185199629052663d3b4535cb  
+                run-id: 22029305066
+                name: cosmocc-679be2dfbf369d861a9446857640590ac485ff2d  
                 github-token: ${{ github.token }}
             - name: "download labs JDK libs"
               uses: actions/download-artifact@v7
               with:
-                run-id: 21328957334
-                name: labs-${{ matrix.arch }}-libs-6d33251cbbb6f895185199629052663d3b4535cb  
+                run-id: 22029305066
+                name: labs-${{ matrix.arch }}-libs-679be2dfbf369d861a9446857640590ac485ff2d  
                 github-token: ${{ github.token }}
             - name: "download graal helper libs"
               uses: actions/download-artifact@v7
               with:
-                run-id: 21328957334
-                name: graal-${{ matrix.arch }}-libs-6d33251cbbb6f895185199629052663d3b4535cb  
+                run-id: 22029305066
+                name: graal-${{ matrix.arch }}-libs-679be2dfbf369d861a9446857640590ac485ff2d  
                 github-token: ${{ github.token }}
             - name: "build native image from source"
               run: make ARCH=${{ matrix.arch }} build-native-image
@@ -64,8 +64,8 @@ jobs:
             - name: "get cosmocc artifact"
               uses: actions/download-artifact@v7
               with:
-                run-id: 21328957334
-                name: cosmocc-6d33251cbbb6f895185199629052663d3b4535cb  
+                run-id: 22029305066
+                name: cosmocc-679be2dfbf369d861a9446857640590ac485ff2d  
                 github-token: ${{ github.token }}
             - name: "get x86_64 google-java-format artifact"
               uses: actions/download-artifact@v7
