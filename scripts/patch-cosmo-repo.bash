@@ -22,7 +22,7 @@ main () {
 
     if [ ! -d "cosmopolitan" ]; then
         rm -rf cosmopolitan
-        git clone --depth=1 --branch=header-stubs https://github.com/ahgamut/cosmopolitan
+        git clone --depth=1 https://github.com/jart/cosmopolitan
     fi
     cd cosmopolitan
     ls /proc/sys/fs/binfmt_misc/

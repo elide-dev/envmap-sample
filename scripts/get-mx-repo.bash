@@ -21,7 +21,7 @@ main () {
     rm -rf mx
 
     # mx is needed for building graal repo
-    git clone --depth=1 --branch 7.68.11 https://github.com/graalvm/mx
+    git clone --depth=1 https://github.com/graalvm/mx
     cd mx
     git config user.name gautham
     git config user.email gautham@elide.dev
