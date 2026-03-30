@@ -41,18 +41,16 @@ main () {
     export PATH="$BASELOC/testing/mx:$PATH"
     export JAVA_HOME="$MX_JDK_LABS"
     COSMOCC="$BASELOC/testing/cosmopolitan/cosmocc"
+    export PATH="$COSMOCC/bin:$PATH"
 
     cd substratevm
     mx clean
-    mx build \
-        --projects com.oracle.svm.native.jvm.posix,com.oracle.svm.native.libchelper,com.oracle.svm.native.libcontainer \
-        --alt-cc $COSMOCC/bin/$ARCH-unknown-cosmo-cc \
-        --alt-cxx $COSMOCC/bin/$ARCH-unknown-cosmo-c++ \
-        --alt-ar $COSMOCC/bin/$ARCH-linux-cosmo-ar
+    MULTITARGET=linux-$ARCH-cosmo mx build \
+        --projects com.oracle.svm.native.jvm.posix,com.oracle.svm.native.libchelper,com.oracle.svm.native.libcontainer
 
     RESULT_DIR="$BASELOC/build/graal-$ARCH-helpers"
     mkdir -p "$RESULT_DIR"
-    cp $(find mxbuild -name '*.a' | grep glibc | xargs ls -t | head -n 3) "$RESULT_DIR"
+    cp $(find mxbuild -name '*.a' | grep cosmo | xargs ls -t | head -n 3) "$RESULT_DIR"
 
     cd "$BASELOC"
 }
