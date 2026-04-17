@@ -30,9 +30,9 @@ main () {
     export PATH="$BASELOC/testing/mx:$PATH"
 
     if [ x"$ARCH" = x"x86_64" ]; then
-        LABS_LINK="https://github.com/graalvm/labs-openjdk/releases/download/jvmci-25.1-b16/labsjdk-ce-25.0.2+10-jvmci-25.1-b16-linux-amd64.tar.gz"
+        LABS_LINK="https://github.com/graalvm/labs-openjdk/releases/download/jvmci-25.1-b17/labsjdk-ce-25.0.2+10-jvmci-25.1-b17-linux-amd64.tar.gz"
     elif [ x"$ARCH" = x"aarch64" ]; then
-        LABS_LINK="https://github.com/graalvm/labs-openjdk/releases/download/jvmci-25.1-b16/labsjdk-ce-25.0.2+10-jvmci-25.1-b16-linux-aarch64.tar.gz"
+        LABS_LINK="https://github.com/graalvm/labs-openjdk/releases/download/jvmci-25.1-b17/labsjdk-ce-25.0.2+10-jvmci-25.1-b17-linux-aarch64.tar.gz"
     else
         echo "ARCH is not set!"
         exit 1
@@ -41,7 +41,7 @@ main () {
     cd "$BASELOC/testing"
     wget "$LABS_LINK" -qO boot-labs-jdk.tar.gz
     tar xzf boot-labs-jdk.tar.gz
-    mv labsjdk-ce-25.0.2-jvmci-25.1-b16 boot-labs-jdk
+    mv labsjdk-ce-25.0.2-jvmci-25.1-b17 boot-labs-jdk
 
     ls boot-labs-jdk -al
     # mx fetch-jdk \
