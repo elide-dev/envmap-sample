@@ -37,7 +37,7 @@ main () {
     echo "natimg is at? $NATIMG_PATH"
     export PATH="$NATIMG_PATH/bin:$PATH"
     LABS_LIBDIR="$BASELOC/build/labs-$ARCH-cosmo-libs"
-    GRAAL_HELPERS_DIR="$(realpath ./build/graal-$ARCH-helpers)"
+    GRAAL_HELPERS_DIR="$BASELOC/build/graal-$ARCH-helpers"
 
     if [ x"$ARCH" = x"x86_64" ]; then
         SUBARCH="amd64"
