@@ -37,6 +37,7 @@ main () {
     echo "natimg is at? $NATIMG_PATH"
     export PATH="$NATIMG_PATH/bin:$PATH"
     LABS_LIBDIR="$BASELOC/build/labs-$ARCH-cosmo-libs"
+    GRAAL_HELPERS_DIR="$(realpath ./build/graal-$ARCH-helpers)"
 
     if [ x"$ARCH" = x"x86_64" ]; then
         SUBARCH="amd64"
@@ -48,8 +49,8 @@ main () {
 
     cd "$BASELOC"
     NATIMG_COSMO="$NATIMG_PATH/lib/svm/clibraries/linux-$SUBARCH/cosmo"
-    mkdir -p "$NATIMG_COSMO"
-    cp ./build/graal-$ARCH-helpers/*.a "$NATIMG_COSMO"
+    # mkdir -p "$NATIMG_COSMO"
+    # cp ./build/graal-$ARCH-helpers/*.a "$NATIMG_COSMO"
 
     cd "$BASELOC/testing/google-java-format"
     native-image \
@@ -70,7 +71,7 @@ main () {
         -J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED  \
         --static \
         -H:CCompilerPath="$COSMOCC_BIN/$ARCH-unknown-cosmo-cc" \
-        -H:CLibraryPath="$LABS_LIBDIR" \
+        -H:CLibraryPath="$LABS_LIBDIR,$GRAAL_HELPERS_DIR" \
         -H:PatchableFunctionEntry="$PFE_OPT"\
         -R:StackSize=1048576 \
         -o "google-java-format.$ARCH"
